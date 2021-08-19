@@ -31,7 +31,7 @@ class Reference(Coqpit):
     )
 
 
-def assert_equal(a: Reference, b: Reference):
+def assert_equal(a: Reference, b: Group):
     assert len(a) == len(b)
     assert a.name == b.name
     assert a.size == b.size

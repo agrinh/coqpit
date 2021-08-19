@@ -703,10 +703,10 @@ class Coqpit(Serializable, MutableMapping):
         Args:
             file_name (str, Path or file-like object): path to the output json file or a file-like object to write to.
         """
-        if isinstance(file_name, (Path, str)):
+        if isinstance(file_name, str) or isinstance(file_name, Path):
             opened = open(file_name, "w", encoding="utf8")
         else:
-            opened = contextlib.nullcontext(file_name)
+            opened = contextlib.contextmanager(lambda: (yield file_name))()
         with opened as f:
             json.dump(asdict(self), f, indent=4)
 
@@ -723,7 +723,7 @@ class Coqpit(Serializable, MutableMapping):
         if isinstance(file_name, (Path, str)):
             opened = open(file_name, "r", encoding="utf8")
         else:
-            opened = contextlib.contextmanager(lambda: (yield file_name))
+            opened = contextlib.contextmanager(lambda: (yield file_name))()
         with opened as f:
             dump_dict = json.load(f)
         # TODO: this looks stupid 💆

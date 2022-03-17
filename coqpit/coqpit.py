@@ -723,7 +723,7 @@ class Coqpit(Serializable, MutableMapping):
         if isinstance(file_name, (Path, str)):
             opened = open(file_name, "r", encoding="utf8")
         else:
-            opened = contextlib.nullcontext(file_name)
+            opened = contextlib.contextmanager(lambda: (yield file_name))
         with opened as f:
             dump_dict = json.load(f)
         # TODO: this looks stupid 💆

@@ -9,7 +9,7 @@ from dataclasses import MISSING as _MISSING
 from dataclasses import Field, asdict, dataclass, fields, is_dataclass, replace
 from pathlib import Path
 from pprint import pprint
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union, get_type_hints
+from typing import Any, ContextManager, Dict, Generic, List, Optional, Type, TypeVar, Union, get_type_hints
 
 T = TypeVar("T")
 MISSING: Any = "???"
@@ -703,7 +703,7 @@ class Coqpit(Serializable, MutableMapping):
         Args:
             file_name (str, Path or file-like object): path to the output json file or a file-like object to write to.
         """
-        if isinstance(file_name, str) or isinstance(file_name, Path):
+        if isinstance(file_name, (Path, str)):
             opened = open(file_name, "w", encoding="utf8")
         else:
             opened = contextlib.contextmanager(lambda: (yield file_name))()
@@ -720,6 +720,7 @@ class Coqpit(Serializable, MutableMapping):
         Returns:
             Coqpit: new Coqpit with updated config fields.
         """
+        opened: ContextManager
         if isinstance(file_name, (Path, str)):
             opened = open(file_name, "r", encoding="utf8")
         else:
